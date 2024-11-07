@@ -31,10 +31,6 @@ class AndroidFCM {
                     headers: {
                         "Accept": "application/json",
                         "Content-Type": "application/json",
-                        "X-Android-Package": androidPackage,
-                        "X-Android-Cert": androidCert,
-                        "x-firebase-client": "android-min-sdk/23 fire-core/20.0.0 device-name/a21snnxx device-brand/samsung device-model/a21s android-installer/com.android.vending fire-android/30 fire-installations/17.0.0 fire-fcm/22.0.0 android-platform/ kotlin/1.9.23 android-target-sdk/34",
-                        "x-firebase-client-log-type": "3",
                         "x-goog-api-key": apiKey,
                     },
                 });
@@ -46,7 +42,6 @@ class AndroidFCM {
             return response.data.authToken.token;
         } catch (error) {
             if (error.response) {
-                // Log the error response data for more insight into the issue
                 console.error(`Request failed with status code ${error.response.status}`);
                 console.error(`Response data: ${JSON.stringify(error.response.data)}`);
             } else {
