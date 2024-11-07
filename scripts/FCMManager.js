@@ -2,7 +2,7 @@ import {Client} from './PushReceiverClient.js';
 import {AndroidFCM} from './AndroidFCM.js';
 
 class FCMManager {
-    static expoPushToken = null;
+    //static expoPushToken = null;
     static rustplusAuthToken = null;
     static creds = null;
     
@@ -56,7 +56,7 @@ class FCMManager {
         const androidPackageCert = "E28D05345FB78A7A1A63D70F4A302DBF426CA5AD";
 
         const fcmCredentials = await AndroidFCM.register(apiKey, projectId, gcmSenderId, gmsAppId, androidPackageName, androidPackageCert);
-        this.expoPushToken = await this.getExpoPushToken(fcmCredentials.fcm.token);
+        //this.expoPushToken = await this.getExpoPushToken(fcmCredentials.fcm.token);
 
         this.linkSteamWithRustPlus().then(authToken => {
             this.rustplusAuthToken = authToken;
@@ -73,7 +73,6 @@ class FCMManager {
         const androidId = this.creds.fcm_credentials.gcm.androidId;
         const securityToken = this.creds.fcm_credentials.gcm.securityToken;
         const client = new Client(androidId, securityToken, []);
-
         client.on('ON_DATA_RECEIVED', (data) => {
             const parsedData = JSON.parse(data.appData[2].value);
 
