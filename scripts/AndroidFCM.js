@@ -92,4 +92,4 @@ class AndroidFCM {
 
 }
 
-export default AndroidFCM;
+export {AndroidFCM};
