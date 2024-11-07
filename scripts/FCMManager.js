@@ -8,20 +8,16 @@ class FCMManager {
     
 
     static async linkSteamWithRustPlus() {
-        const popup = window.open('', '_blank', 'width=600,height=400');
-
-        fetch('https://companion-rust.facepunch.com/app?returnUrl=')
-          .then(response => response.text())
-          .then(data => {
-            popup.document.write('<pre>' + data + '</pre>');
-            popup.document.close();
-            setTimeout(() => popup.close(), 5000);  // Close popup after 5 seconds
-          })
-          .catch(error => {
+        try {
+            const response = await fetch('https://companion-rust.facepunch.com/app?returnUrl=', {
+                method: 'GET'
+            });
+    
+            const htmlData = await response.text();
+            console.log(htmlData); // Log HTML content
+        } catch (error) {
             console.error('Error fetching the page:', error);
-            popup.document.write('Failed to load page.');
-            popup.document.close();
-          });
+        }
     }
 
     static async fcmRegister() {
