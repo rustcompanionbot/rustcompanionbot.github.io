@@ -21,20 +21,16 @@ class Client {
   }
 
   async _checkIn() {
-    // Replace with actual check-in method if necessary
     console.log('Check-in successful');
   }
 
   _connect() {
-    // Use WebSocket for browser
     this._socket = new WebSocket('wss://mtalk.google.com:5228');
     
     this._socket.onopen = () => this._onSocketConnect();
     this._socket.onclose = () => this._onSocketClose();
     this._socket.onerror = (error) => this._onSocketError(error);
     this._socket.onmessage = (event) => this._onMessage(event);
-
-    // Send login buffer
     this._socket.send(this._loginBuffer());
   }
 
@@ -85,7 +81,6 @@ class Client {
   _onMessage(event) {
     const data = event.data;
     const decodedMessage = proto.lookupType('mcs_proto.LoginResponse').decode(new Uint8Array(data));
-    // Handle the message as needed
     console.log('Received message:', decodedMessage);
   }
 
