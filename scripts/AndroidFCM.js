@@ -34,11 +34,11 @@ class AndroidFCM {
                 "x-firebase-client": "android-min-sdk/23 fire-core/20.0.0 device-name/a21snnxx device-brand/samsung device-model/a21s android-installer/com.android.vending fire-android/30 fire-installations/17.0.0 fire-fcm/22.0.0 android-platform/ kotlin/1.9.23 android-target-sdk/34",
                 "x-firebase-client-log-type": "3",
                 "x-goog-api-key": apiKey
-                //"User-Agent": "Dalvik/2.1.0 (Linux; U; Android 11; SM-A217F Build/RP1A.200720.012)",
             },
         });
 
-        // ensure auth token received
+        // ensure auth token received                 //"User-Agent": "Dalvik/2.1.0 (Linux; U; Android 11; SM-A217F Build/RP1A.200720.012)",
+
         if(!response.data.authToken || !response.data.authToken.token){
             throw new Error(`Failed to get Firebase installation AuthToken: ${response.data}`);
         }
