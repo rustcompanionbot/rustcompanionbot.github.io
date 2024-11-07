@@ -5,17 +5,6 @@ class FCMManager {
     static expoPushToken = null;
     static rustplusAuthToken = null;
     static creds = null;
-
-
-
-    static async registerWithRustPlus(authToken, expoPushToken) {
-        return axios.post('https://companion-rust.facepunch.com:443/api/push/register', {
-            AuthToken: authToken,
-            DeviceId: 'rustplus.js',
-            PushKind: 3,
-            PushToken: expoPushToken,
-        })
-    }
     
 
     static async linkSteamWithRustPlus() {
