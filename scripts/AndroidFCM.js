@@ -1,5 +1,4 @@
-import * as axios from 'https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js';
-
+//const axios = window.axios;
 
 class AndroidFCM {
 

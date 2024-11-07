@@ -1,5 +1,4 @@
-import * as protobuf from 'https://cdn.jsdelivr.net/npm/protobufjs@6.X.X/dist/protobuf.min.js';
-
+const protobuf = window.protobuf;
 
 class Client {
   static async init() {
