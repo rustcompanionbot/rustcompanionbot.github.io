@@ -1,5 +1,5 @@
 // main.js
-import { FCMManager } from './FCMManager.js';
+import FCMManager from './FCMManager.js';
 
 FCMManager.fcmRegister().then(() => {
     console.log('registration complete.');

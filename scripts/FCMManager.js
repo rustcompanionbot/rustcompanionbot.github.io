@@ -1,5 +1,5 @@
-import Client from '/Client.js';
-import AndroidFCM from '/AndroidFCM.js';
+import Client from './PushReceiverClient.js';
+import AndroidFCM from './AndroidFCM.js';
 
 class FCMManager {
     static expoPushToken = null;
