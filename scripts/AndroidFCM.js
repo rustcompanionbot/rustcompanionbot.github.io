@@ -99,7 +99,7 @@ class AndroidFCM {
     }
 
     static generateFirebaseFID() {
-        const buf = randomBytes(17);
+        const buf = this.randomBytes(17);
         buf[0] = 0b01110000 | (buf[0] & 0b00001111);
         return buf.toString("base64").replace(/=/g, "");
     }
