@@ -48,30 +48,44 @@ class AndroidFCM {
 
     static async registerRequest(installationAuthToken, apiKey, androidPackageName, androidPackageCert, retry = 0) {
 
+        // register gcm
         const registerResponse = await axios.post("https://android.clients.google.com/c2dm/register3", {
-            "device": "web-device",  // Web device identifier, since we're in a browser
+            "device": androidId,
             "app": androidPackageName,
             "cert": androidPackageCert,
             "app_ver": "1",
-            "X-scope": "*",
-            "X-Goog-Firebase-Installations-Auth": installationAuthToken,
-            "X-gms_app_id": "your-gms-app-id",  // Substitute with actual GMS App ID
+            "X-subtype" : gcmSenderId,
+            "X-app_ver" : "1",
+            "X-osv" : "29",
+            "X-cliv" : "fiid-21.1.1",
+            "X-gmsv" : "220217001",
+            // "X-appid" : "",
+            "X-scope" : "*",
+            "X-Goog-Firebase-Installations-Auth" : installationAuthToken,
+            "X-gms_app_id" : gmsAppId,
+            "X-Firebase-Client" : "android-min-sdk/23 fire-core/20.0.0 device-name/a21snnxx device-brand/samsung device-model/a21s android-installer/com.android.vending fire-android/30 fire-installations/17.0.0 fire-fcm/22.0.0 android-platform/ kotlin/1.9.23 android-target-sdk/34",
+            // "X-firebase-app-name-hash" : "",
+            "X-Firebase-Client-Log-Type": "1",
+            "X-app_ver_name": "1",
+            "target_ver": "31",
+            "sender": gcmSenderId,
         }, {
-            headers: {
-                "Authorization": `Bearer ${installationAuthToken}`,
+            headers : {
+                "Authorization": `AidLogin ${androidId}:${securityToken}`,
                 "Content-Type": "application/x-www-form-urlencoded",
             },
         });
 
         // retry a few times if needed
         const data = registerResponse.data;
-        if (data.includes('Error')) {
+        if(data.includes('Error')){
             console.warn(`Register request has failed with ${data}`);
-            if (retry >= 5) {
+            if(retry >= 5){
                 throw new Error('GCM register has failed');
             }
             console.warn(`Retry... ${retry + 1}`);
-            return this.registerRequest(installationAuthToken, apiKey, androidPackageName, androidPackageCert, retry + 1);
+            await waitFor(1000);
+            return this.registerRequest(androidId, securityToken, installationAuthToken, apiKey, gcmSenderId, gmsAppId, androidPackageName, androidPackageCert, retry + 1);
         }
 
         // extract fcm token from response
