@@ -19,12 +19,11 @@ class AndroidFCM {
 
     static async installRequest(apiKey, projectId, gmsAppId, androidPackage, androidCert) {
         try {
-            // Send Firebase installation request
             const response = await axios.post(
                 `https://firebaseinstallations.googleapis.com/v1/projects/${projectId}/installations`,
                 {
-                    "fid": this.generateFirebaseFID(),  // Assuming this function is correct
-                    "appId": gmsAppId,  // Ensure gmsAppId is correct
+                    "fid": this.generateFirebaseFID(),
+                    "appId": gmsAppId,
                     "authVersion": "FIS_v2",
                     "sdkVersion": "a:17.0.0",
                 },
@@ -32,31 +31,28 @@ class AndroidFCM {
                     headers: {
                         "Accept": "application/json",
                         "Content-Type": "application/json",
-                        "X-Android-Package": androidPackage,  // Ensure androidPackage is correct
-                        "X-Android-Cert": androidCert,  // Ensure androidCert is correct
+                        "X-Android-Package": androidPackage,
+                        "X-Android-Cert": androidCert,
                         "x-firebase-client": "android-min-sdk/23 fire-core/20.0.0 device-name/a21snnxx device-brand/samsung device-model/a21s android-installer/com.android.vending fire-android/30 fire-installations/17.0.0 fire-fcm/22.0.0 android-platform/ kotlin/1.9.23 android-target-sdk/34",
                         "x-firebase-client-log-type": "3",
-                        "x-goog-api-key": apiKey,  // Ensure API key has proper permissions
+                        "x-goog-api-key": apiKey,
                     },
                 });
         
-            // Check if the auth token is received
             if (!response.data.authToken || !response.data.authToken.token) {
                 throw new Error(`Failed to get Firebase installation AuthToken: ${JSON.stringify(response.data)}`);
             }
         
-            // Return the auth token
             return response.data.authToken.token;
-        
         } catch (error) {
-            // Log and throw detailed error if request fails
             if (error.response) {
+                // Log the error response data for more insight into the issue
                 console.error(`Request failed with status code ${error.response.status}`);
                 console.error(`Response data: ${JSON.stringify(error.response.data)}`);
             } else {
                 console.error("Error during Firebase Installation request:", error.message);
             }
-            throw error;  // Rethrow or handle accordingly
+            throw error;
         }
     }
 
