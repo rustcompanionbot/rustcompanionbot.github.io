@@ -3,7 +3,7 @@ const protobuf = window.protobuf;
 class Client {
   static async init() {
     if (proto) return;
-    proto = await protobuf.load('https://example.com/path/to/mcs.proto');
+    proto = await protobuf.load('../mcs.proto');
   }
 
   constructor(androidId, securityToken, persistentIds = []) {
