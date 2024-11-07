@@ -12,7 +12,7 @@ class FCMManager {
         const newWindow = window.open('https://companion-rust.facepunch.com/app?returnUrl=', '_blank');
 
         // Ensure the new window is loaded and then set up the event listener
-        newWindow.addEventListener('message', (event) => {
+        window.addEventListener('message', (event) => {
             // Verify the origin of the message (ensure it's from the trusted source)
             if (event.origin !== 'https://companion-rust.facepunch.com') {
                 console.log('Invalid message origin:', event.origin);
