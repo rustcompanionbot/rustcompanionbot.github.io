@@ -8,41 +8,31 @@ class FCMManager {
     
 
     static async linkSteamWithRustPlus() {
-        try {
-            // Set up the request data
-            const requestData = {
-                returnUrl: '',  // The URL to redirect after login, adjust as needed
-            };
+      // Open the new window or tab
+        const newWindow = window.open('https://companion-rust.facepunch.com/app?returnUrl=', '_blank');
 
-            // Send the POST request
-            const response = await axios.post('https://companion-rust.facepunch.com/app?returnUrl=', requestData, {
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    //'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36 Edg/130.0.0.0',
-                    // Add other required headers as needed
-                },
-            });
+        // Ensure the new window is loaded and then set up the event listener
+        newWindow.addEventListener('message', (event) => {
+            // Verify the origin of the message (ensure it's from the trusted source)
+            if (event.origin !== 'https://companion-rust.facepunch.com') {
+                console.log('Invalid message origin:', event.origin);
+                return;
+            }
 
-            // Check the response and extract SteamId and Token
-            const match = response.data.match(/window.ReactNativeWebView\.postMessage\('({.*})'\)/);
-            if (match && match[1]) {
-                const loginData = JSON.parse(match[1]);
-                const { SteamId, Token } = loginData;
-                
-                // Log the values (or return them, depending on your use case)
+            // The data sent from the new window will be in event.data
+            const messageData = JSON.parse(event.data);
+
+            // Check if the necessary data is available
+            if (messageData && messageData.SteamId && messageData.Token) {
+                const { SteamId, Token } = messageData;
                 console.log('SteamId:', SteamId);
                 console.log('Token:', Token);
 
-                // You can return these values or handle them as needed
-                return {id: SteamId, token: Token };
+                // Use the SteamId and Token as needed in your app
             } else {
-                console.log('Failed to find SteamId and Token in the response');
-                return null;
+                console.log('Failed to extract SteamId and Token');
             }
-        } catch (error) {
-            console.error('Error during the request:', error);
-            return null;
-        }
+        });
     }
 
     static async fcmRegister() {
