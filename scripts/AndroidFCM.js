@@ -95,7 +95,7 @@ class AndroidFCM {
     // Web Crypto API to generate Firebase ID in the browser
     static generateFirebaseFID() {
         const bytes = [];
-        for (let i = 0; i < size; i++) {
+        for (let i = 0; i < 17; i++) {
             bytes.push(Math.floor(Math.random() * 256)); // Generate random byte in range 0-255
         }
         const buf = Buffer.from(bytes);
