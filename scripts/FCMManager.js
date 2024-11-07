@@ -55,7 +55,7 @@ class FCMManager {
         const androidPackageName = "com.facepunch.rust.companion";
         const androidPackageCert = "E28D05345FB78A7A1A63D70F4A302DBF426CA5AD";
 
-        const fcmCredentials = await AndroidFCM.register(apiKey, projectId, gcmSenderId, gmsAppId, androidPackageName, androidPackageCert);
+        //const fcmCredentials = await AndroidFCM.register(apiKey, projectId, gcmSenderId, gmsAppId, androidPackageName, androidPackageCert);
         //this.expoPushToken = await this.getExpoPushToken(fcmCredentials.fcm.token);
 
         this.linkSteamWithRustPlus().then(authToken => {
