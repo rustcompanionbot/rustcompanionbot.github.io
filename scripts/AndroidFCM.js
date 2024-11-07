@@ -19,27 +19,27 @@ class AndroidFCM {
 
     static async installRequest(apiKey, projectId, gmsAppId, androidPackage, androidCert) {
 
-        const response = await axios.post(`https://firebaseinstallations.googleapis.com/v1/projects/${projectId}/installations`, 
-        {
-            fid: this.generateFirebaseFID(),  // Ensure this returns a valid fid
-            appId: gmsAppId,  // Ensure this is a valid Firebase App ID
-            authVersion: "FIS_v2",
-            sdkVersion: "a:17.0.0",  // Double-check if this version matches your SDK
-        }, 
-        {
+         // send firebase installation request
+         const response = await axios.post(`https://firebaseinstallations.googleapis.com/v1/projects/${projectId}/installations`, {
+            "fid": this.generateFirebaseFID(),
+            "appId": gmsAppId,
+            "authVersion": "FIS_v2",
+            "sdkVersion": "a:17.0.0",
+        }, {
             headers: {
                 "Accept": "application/json",
                 "Content-Type": "application/json",
-                "X-Android-Package": androidPackage,  // Ensure this is the correct package
-                "X-Android-Cert": androidCert,  // Ensure this is the base64 cert of your app
-                "x-firebase-client": "web",  // Or platform-specific value
+                "X-Android-Package": androidPackage,
+                "X-Android-Cert": androidCert,
+                "x-firebase-client": "android-min-sdk/23 fire-core/20.0.0 device-name/a21snnxx device-brand/samsung device-model/a21s android-installer/com.android.vending fire-android/30 fire-installations/17.0.0 fire-fcm/22.0.0 android-platform/ kotlin/1.9.23 android-target-sdk/34",
                 "x-firebase-client-log-type": "3",
-                "x-goog-api-key": apiKey  // Ensure your API key is valid
-            }
+                "x-goog-api-key": apiKey,
+                "User-Agent": "Dalvik/2.1.0 (Linux; U; Android 11; SM-A217F Build/RP1A.200720.012)",
+            },
         });
 
         // ensure auth token received
-        if (!response.data.authToken || !response.data.authToken.token) {
+        if(!response.data.authToken || !response.data.authToken.token){
             throw new Error(`Failed to get Firebase installation AuthToken: ${response.data}`);
         }
 
@@ -80,13 +80,15 @@ class AndroidFCM {
 
     // Web Crypto API to generate Firebase ID in the browser
     static generateFirebaseFID() {
-        const array = new Uint8Array(17);
-        window.crypto.getRandomValues(array);
+        const bytes = [];
+        for (let i = 0; i < size; i++) {
+            bytes.push(Math.floor(Math.random() * 256)); // Generate random byte in range 0-255
+        }
+        const buf = Buffer.from(bytes);
+        buf[0] = 0b01110000 | (buf[0] & 0b00001111);
 
-        // manipulate the first byte as in the original method
-        array[0] = 0b01110000 | (array[0] & 0b00001111);
-
-        return btoa(String.fromCharCode.apply(null, array)).replace(/=/g, "");
+        // encode to base64 and remove padding
+        return buf.toString("base64").replace(/=/g, "");
     }
 
 }
