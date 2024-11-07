@@ -1,4 +1,4 @@
-import protobuf from 'https://cdn.jsdelivr.net/npm/protobufjs@6.X.X/dist/protobuf.min.js';
+import * as protobuf from 'https://cdn.jsdelivr.net/npm/protobufjs@6.X.X/dist/protobuf.min.js';
 
 
 class Client {
