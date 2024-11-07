@@ -19,35 +19,47 @@ class AndroidFCM {
 
     static async installRequest(apiKey, projectId, gmsAppId, androidPackage, androidCert) {
         try {
-            const response = await axios.post(
-                `https://firebaseinstallations.googleapis.com/v1/projects/${projectId}/installations`,
-                {
-                    "fid": this.generateFirebaseFID(),
-                    "appId": gmsAppId,
-                    "authVersion": "FIS_v2",
-                    "sdkVersion": "a:17.0.0",
-                },
-                {
-                    headers: {
-                        "Accept": "application/json",
-                        "Content-Type": "application/json",
-                        "x-goog-api-key": apiKey,
-                    },
-                });
-        
-            if (!response.data.authToken || !response.data.authToken.token) {
+            // Construct the URL
+            const url = `https://firebaseinstallations.googleapis.com/v1/projects/${projectId}/installations`;
+    
+            // Create the body
+            const body = {
+                "fid": this.generateFirebaseFID(),
+                "appId": gmsAppId,
+                "authVersion": "FIS_v2",
+                "sdkVersion": "a:17.0.0"
+            };
+    
+            // Set the headers
+            const headers = {
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                "X-Android-Package": androidPackage,  // Package name from your app
+                "X-Android-Cert": androidCert,  // SHA1 certificate fingerprint
+                "x-firebase-client": "android-min-sdk/23 fire-core/20.0.0 device-name/a2…oid-platform/ kotlin/1.9.23 android-target-sdk/34",  // Firebase-specific header, could be more dynamic if needed
+                "x-goog-api-key": apiKey  // Your Firebase API key
+            };
+    
+            // Send the request to Firebase Installations API
+            const response = await axios.post(url, body, { headers });
+    
+            // Check if the response contains the authToken and return it
+            if (response.data.authToken && response.data.authToken.token) {
+                return response.data.authToken.token;
+            } else {
                 throw new Error(`Failed to get Firebase installation AuthToken: ${JSON.stringify(response.data)}`);
             }
-        
-            return response.data.authToken.token;
+    
         } catch (error) {
             if (error.response) {
+                // Log API-specific errors
                 console.error(`Request failed with status code ${error.response.status}`);
                 console.error(`Response data: ${JSON.stringify(error.response.data)}`);
             } else {
+                // Log network or general errors
                 console.error("Error during Firebase Installation request:", error.message);
             }
-            throw error;
+            throw error;  // Re-throw the error for further handling
         }
     }
 
