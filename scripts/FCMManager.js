@@ -85,3 +85,5 @@ class FCMManager {
         await client.connect();
     }
 }
+
+export default FCMManager;
