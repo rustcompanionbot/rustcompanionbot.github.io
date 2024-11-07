@@ -33,8 +33,7 @@ class AndroidFCM {
                 "X-Android-Cert": androidCert,
                 "x-firebase-client": "web", // Web client version can be simplified
                 "x-firebase-client-log-type": "3",
-                "x-goog-api-key": apiKey,
-                "User-Agent": "Mozilla/5.0",
+                "x-goog-api-key": apiKey
             },
         });
 
