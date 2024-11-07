@@ -8,31 +8,10 @@ class FCMManager {
     
 
     static async linkSteamWithRustPlus() {
-      // Open the new window or tab
-        const newWindow = window.open('https://companion-rust.facepunch.com/app?returnUrl=', '_blank');
-
-        // Ensure the new window is loaded and then set up the event listener
-        window.addEventListener('message', (event) => {
-            // Verify the origin of the message (ensure it's from the trusted source)
-            if (event.origin !== 'https://companion-rust.facepunch.com') {
-                console.log('Invalid message origin:', event.origin);
-                return;
-            }
-
-            // The data sent from the new window will be in event.data
-            const messageData = JSON.parse(event.data);
-
-            // Check if the necessary data is available
-            if (messageData && messageData.SteamId && messageData.Token) {
-                const { SteamId, Token } = messageData;
-                console.log('SteamId:', SteamId);
-                console.log('Token:', Token);
-
-                // Use the SteamId and Token as needed in your app
-            } else {
-                console.log('Failed to extract SteamId and Token');
-            }
-        });
+        fetch('https://companion-rust.facepunch.com/app?returnUrl=')
+        .then(response => response.text())
+        .then(data => console.log(data))
+        .catch(error => console.error('Error fetching the page:', error));
     }
 
     static async fcmRegister() {
