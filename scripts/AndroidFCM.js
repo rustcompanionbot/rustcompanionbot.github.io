@@ -92,16 +92,15 @@ class AndroidFCM {
         return registerResponse.data.split("=")[1];
     }
 
-    // Web Crypto API to generate Firebase ID in the browser
-    static generateFirebaseFID() {
-        const bytes = [];
-        for (let i = 0; i < 17; i++) {
-            bytes.push(Math.floor(Math.random() * 256)); // Generate random byte in range 0-255
-        }
-        const buf = Buffer.from(bytes);
-        buf[0] = 0b01110000 | (buf[0] & 0b00001111);
+    static randomBytes(size) {
+        const bytes = new Uint8Array(size);
+        window.crypto.getRandomValues(bytes);  // Secure random byte generation
+        return bytes;
+    }
 
-        // encode to base64 and remove padding
+    static generateFirebaseFID() {
+        const buf = randomBytes(17);
+        buf[0] = 0b01110000 | (buf[0] & 0b00001111);
         return buf.toString("base64").replace(/=/g, "");
     }
 
