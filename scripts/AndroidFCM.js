@@ -98,10 +98,12 @@ class AndroidFCM {
         return bytes;
     }
 
+    // Generate Firebase Installation ID (FID)
     static generateFirebaseFID() {
         const buf = this.randomBytes(17);
-        buf[0] = 0b01110000 | (buf[0] & 0b00001111);
-        return buf.toString("base64").replace(/=/g, "");
+        buf[0] = 0b01110000 | (buf[0] & 0b00001111); 
+        const base64String = btoa(String.fromCharCode.apply(null, buf));
+        return base64String.replace(/=/g, "");
     }
 
 }
