@@ -8,15 +8,20 @@ class FCMManager {
     
 
     static async linkSteamWithRustPlus() {
-        try {
-            const response = await fetch('https://companion-rust.facepunch.com/app?returnUrl=', {
-                method: 'GET'
-            });
-    
-            const htmlData = await response.text();
-            console.log(htmlData); // Log HTML content
-        } catch (error) {
-            console.error('Error fetching the page:', error);
+
+        // Open a new window with the specified URL
+        var newWindow = window.open('https://companion-rust.facepunch.com/app?returnUrl=', '_blank');
+
+        // Check if the window was successfully opened
+        if (newWindow) {
+            // Wait for the new window to load
+            newWindow.onload = function() {
+                // Access the content of the new window
+                var response = newWindow.document.body.innerHTML;
+                console.log(response);
+            };
+        } else {
+            console.log('Failed to open the new window.');
         }
     }
 
