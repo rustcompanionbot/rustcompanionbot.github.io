@@ -19,22 +19,23 @@ class AndroidFCM {
 
     static async installRequest(apiKey, projectId, gmsAppId, androidPackage, androidCert) {
 
-        // send firebase installation request
-        const response = await axios.post(`https://firebaseinstallations.googleapis.com/v1/projects/${projectId}/installations`, {
-            "fid": this.generateFirebaseFID(),
-            "appId": gmsAppId,
-            "authVersion": "FIS_v2",
-            "sdkVersion": "a:17.0.0",
-        }, {
+        const response = await axios.post(`https://firebaseinstallations.googleapis.com/v1/projects/${projectId}/installations`, 
+        {
+            fid: this.generateFirebaseFID(),  // Ensure this returns a valid fid
+            appId: gmsAppId,  // Ensure this is a valid Firebase App ID
+            authVersion: "FIS_v2",
+            sdkVersion: "a:17.0.0",  // Double-check if this version matches your SDK
+        }, 
+        {
             headers: {
                 "Accept": "application/json",
                 "Content-Type": "application/json",
-                "X-Android-Package": androidPackage,
-                "X-Android-Cert": androidCert,
-                "x-firebase-client": "web", // Web client version can be simplified
+                "X-Android-Package": androidPackage,  // Ensure this is the correct package
+                "X-Android-Cert": androidCert,  // Ensure this is the base64 cert of your app
+                "x-firebase-client": "web",  // Or platform-specific value
                 "x-firebase-client-log-type": "3",
-                "x-goog-api-key": apiKey
-            },
+                "x-goog-api-key": apiKey  // Ensure your API key is valid
+            }
         });
 
         // ensure auth token received
