@@ -1,4 +1,5 @@
-const axios = require("axios");
+import axios from 'https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js';
+
 
 class AndroidFCM {
 

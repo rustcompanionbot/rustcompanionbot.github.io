@@ -1,3 +1,6 @@
+import Client from '/Client.js';
+import AndroidFCM from '/AndroidFCM.js';
+
 class FCMManager {
     static expoPushToken = null;
     static rustplusAuthToken = null;
@@ -5,20 +8,15 @@ class FCMManager {
 
     static async linkSteamWithRustPlus() {
         return new Promise((resolve, reject) => {
-            // Define the URL for the Rust+ Steam login page
             const linkUrl = 'https://companion-rust.facepunch.com/login';
 
-            // Redirect the user to the Rust+ login page
-            // Optionally, you could open this in a new window or tab depending on your needs
             window.location.href = linkUrl;
 
-            // You would need a callback in your app that listens for the redirected request
-            // Assuming you set up the callback URL to capture the 'token' query param
             const urlParams = new URLSearchParams(window.location.search);
             const authToken = urlParams.get('token');
 
             if (authToken) {
-                resolve(authToken);  // Return the token back to where it's called
+                resolve(authToken); 
             } else {
                 reject(new Error('Token missing or failed to authenticate.'));
             }
@@ -26,8 +24,7 @@ class FCMManager {
     }
 
     static async handleSteamCallback() {
-        // Handle the callback once the user is redirected back
-        // Capture the 'token' from the URL and use it
+
         const urlParams = new URLSearchParams(window.location.search);
         const authToken = urlParams.get('token');
         
@@ -35,7 +32,6 @@ class FCMManager {
             console.log('Successfully linked Steam account with Rust+:', authToken);
             this.rustplusAuthToken = authToken;
 
-            // Now proceed with further actions, such as registration with Rust+ (via API)
             const expoPushToken = await this.getExpoPushToken(this.creds.fcm_credentials.fcm.token);
             await this.registerWithRustPlus(this.rustplusAuthToken, expoPushToken);
         } else {
@@ -54,9 +50,7 @@ class FCMManager {
         const fcmCredentials = await AndroidFCM.register(apiKey, projectId, gcmSenderId, gmsAppId, androidPackageName, androidPackageCert);
         this.expoPushToken = await this.getExpoPushToken(fcmCredentials.fcm.token);
 
-        // Trigger Steam linking flow
         this.linkSteamWithRustPlus().then(authToken => {
-            // Now that the Steam account is linked, use the obtained authToken
             this.rustplusAuthToken = authToken;
         }).catch(error => {
             console.error("Error during Steam linking:", error);
@@ -70,7 +64,7 @@ class FCMManager {
 
         const androidId = this.creds.fcm_credentials.gcm.androidId;
         const securityToken = this.creds.fcm_credentials.gcm.securityToken;
-        const client = new PushReceiverClient(androidId, securityToken, []);
+        const client = new Client(androidId, securityToken, []);
 
         client.on('ON_DATA_RECEIVED', (data) => {
             const parsedData = JSON.parse(data.appData[2].value);

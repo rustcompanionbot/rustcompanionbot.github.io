@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RustPlus Pairing</title>
 </head>
 <body>
     <div>To pair rustplus.js with Rust+, you must allow popup windows. You may need to refresh this page after enabling popups.</div>
 
-    <!-- Include the JavaScript with defer (runs after HTML is parsed) and type="module" if it's an ES6 module -->
-    <script src="scripts/main.js" defer type="module"></script>
+    <script src="https://cdn.jsdelivr.net/npm/protobufjs@6.X.X/dist/protobuf.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <script src="scripts/main.js" type="module" defer></script>
 </body>
 </html>
