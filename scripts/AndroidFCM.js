@@ -1,95 +1,77 @@
-//const axios = window.axios;
-
+// Initialize Firebase SDK dynamically within the register method
 class AndroidFCM {
-
     static async register(apiKey, projectId, gmsAppId, androidPackageName, androidPackageCert) {
-
-        // create firebase installation
-        const installationAuthToken = await this.installRequest(apiKey, projectId, gmsAppId, androidPackageName, androidPackageCert);
-
-        // register gcm
-        const fcmToken = await this.registerRequest(installationAuthToken, apiKey, androidPackageName, androidPackageCert);
-
-        return {
-            fcm: {
-                token: fcmToken,
-            },
+        // Dynamically create the firebase config using the parameters
+        const firebaseConfig = {
+            apiKey: apiKey,
+            authDomain: `${projectId}.firebaseapp.com`,
+            projectId: projectId,
+            storageBucket: `${projectId}.appspot.com`,
+            messagingSenderId: gmsAppId,
+            appId: gmsAppId,  // Assuming `gmsAppId` is also the appId
+            measurementId: `${projectId}-ID`,  // This might not be needed, set it based on your Firebase Console
         };
-    }
 
-    static async installRequest(apiKey, projectId, gmsAppId, androidPackage, androidCert) {
+        // Initialize Firebase with the dynamically created config
+        const app = firebase.initializeApp(firebaseConfig);
 
-        // send firebase installation request
-        const response = await axios.post(`https://firebaseinstallations.googleapis.com/v1/projects/${projectId}/installations`, {
-            "fid": this.generateFirebaseFID(),
-            "appId": gmsAppId,
-            "authVersion": "FIS_v2",
-            "sdkVersion": "a:17.0.0",
-        }, {
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json",
-                "X-Android-Package": androidPackage,
-                "X-Android-Cert": androidCert,
-                "x-firebase-client": "android-min-sdk/23 fire-core/20.0.0 device-name/a21snnxx device-brand/samsung device-model/a21s android-installer/com.android.vending fire-android/30 fire-installations/17.0.0 fire-fcm/22.0.0 android-platform/ kotlin/1.9.23 android-target-sdk/34",
-                "x-firebase-client-log-type": "3",
-                "x-goog-api-key": apiKey
-            },
-        });
+        // Initialize Firebase Installations
+        const installations = firebase.installations(app);
 
-        // ensure auth token received
-        if(!response.data.authToken || !response.data.authToken.token){
-            throw new Error(`Failed to get Firebase installation AuthToken: ${response.data}`);
+        // Initialize Firebase Messaging
+        const messaging = firebase.messaging(app);
+
+        try {
+            // create firebase installation (get the installation token)
+            const installationAuthToken = await this.installRequest(installations);
+
+            // register for Firebase Cloud Messaging (FCM) token
+            const fcmToken = await this.registerRequest(messaging, installationAuthToken);
+
+            return {
+                fcm: {
+                    token: fcmToken,
+                },
+            };
+        } catch (error) {
+            console.error("Error during FCM registration:", error);
+            throw error;
         }
-
-        return response.data.authToken.token;
-
     }
 
-    static async registerRequest(installationAuthToken, apiKey, androidPackageName, androidPackageCert, retry = 0) {
+    static async installRequest(installations) {
+        try {
+            // Get Firebase Installation ID and token using Firebase SDK
+            const fid = await installations.getId();
+            console.log("Firebase Installation ID:", fid);
 
-        // register gcm
-        const registerResponse = await axios.post("https://android.clients.google.com/c2dm/register3", {
-            "device": androidId,
-            "app": androidPackageName,
-            "cert": androidPackageCert,
-            "app_ver": "1",
-            "X-subtype" : gcmSenderId,
-            "X-app_ver" : "1",
-            "X-osv" : "29",
-            "X-cliv" : "fiid-21.1.1",
-            "X-gmsv" : "220217001",
-            // "X-appid" : "",
-            "X-scope" : "*",
-            "X-Goog-Firebase-Installations-Auth" : installationAuthToken,
-            "X-gms_app_id" : gmsAppId,
-            "X-Firebase-Client" : "android-min-sdk/23 fire-core/20.0.0 device-name/a21snnxx device-brand/samsung device-model/a21s android-installer/com.android.vending fire-android/30 fire-installations/17.0.0 fire-fcm/22.0.0 android-platform/ kotlin/1.9.23 android-target-sdk/34",
-            // "X-firebase-app-name-hash" : "",
-            "X-Firebase-Client-Log-Type": "1",
-            "X-app_ver_name": "1",
-            "target_ver": "31",
-            "sender": gcmSenderId,
-        }, {
-            headers : {
-                "Authorization": `AidLogin ${androidId}:${securityToken}`,
-                "Content-Type": "application/x-www-form-urlencoded",
-            },
-        });
+            // Get installation token
+            const token = await installations.getToken();
+            console.log("Firebase Installation Auth Token:", token);
 
-        // retry a few times if needed
-        const data = registerResponse.data;
-        if(data.includes('Error')){
-            console.warn(`Register request has failed with ${data}`);
-            if(retry >= 5){
-                throw new Error('GCM register has failed');
+            return token;
+        } catch (error) {
+            console.error("Error getting Firebase installation token:", error);
+            throw error;
+        }
+    }
+
+    static async registerRequest(messaging, installationAuthToken) {
+        try {
+            // Here we use Firebase Cloud Messaging to get the FCM token
+            const fcmToken = await messaging.getToken({
+                vapidKey: 'YOUR_VAPID_KEY', // You need to generate this key in Firebase Console
+            });
+
+            if (!fcmToken) {
+                throw new Error("Failed to get FCM token");
             }
-            console.warn(`Retry... ${retry + 1}`);
-            await waitFor(1000);
-            return this.registerRequest(androidId, securityToken, installationAuthToken, apiKey, gcmSenderId, gmsAppId, androidPackageName, androidPackageCert, retry + 1);
-        }
 
-        // extract fcm token from response
-        return registerResponse.data.split("=")[1];
+            return fcmToken;
+        } catch (error) {
+            console.error("Error during FCM registration:", error);
+            throw error;
+        }
     }
 
     static randomBytes(size) {
@@ -105,7 +87,6 @@ class AndroidFCM {
         const base64String = btoa(String.fromCharCode.apply(null, buf));
         return base64String.replace(/=/g, "");
     }
-
 }
 
 export {AndroidFCM};
