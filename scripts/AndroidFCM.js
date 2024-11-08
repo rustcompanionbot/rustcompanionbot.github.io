@@ -1,4 +1,8 @@
 // Initialize Firebase SDK dynamically within the register method
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.10.0/firebase-app.js';
+import { getMessaging } from 'https://www.gstatic.com/firebasejs/9.10.0/firebase-messaging.js';
+
+
 class AndroidFCM {
     static async register(apiKey, projectId, gmsAppId, androidPackageName, androidPackageCert) {
         // Dynamically create the firebase config using the parameters
@@ -13,13 +17,13 @@ class AndroidFCM {
         };
 
         // Initialize Firebase with the dynamically created config
-        const app = firebase.initializeApp(firebaseConfig);
+        const app = initializeApp(firebaseConfig);
 
         // Initialize Firebase Installations
         const installations = firebase.installations(app);
 
         // Initialize Firebase Messaging
-        const messaging = firebase.messaging(app);
+        const messaging = getMessaging(app);
 
         try {
             // create firebase installation (get the installation token)
