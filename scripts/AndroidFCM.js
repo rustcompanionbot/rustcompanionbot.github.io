@@ -3,6 +3,7 @@ import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.10.0/firebas
 import { getMessaging } from 'https://www.gstatic.com/firebasejs/9.10.0/firebase-messaging.js';
 
 
+
 class AndroidFCM {
     static async register(apiKey, projectId, gmsAppId, androidPackageName, androidPackageCert) {
         // Dynamically create the firebase config using the parameters
