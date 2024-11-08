@@ -1,7 +1,7 @@
 // Initialize Firebase SDK dynamically within the register method
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.10.0/firebase-app.js';
 import { getMessaging } from 'https://www.gstatic.com/firebasejs/9.10.0/firebase-messaging.js';
-
+import { getInstallations } from 'https://www.gstatic.com/firebasejs/9.10.0/firebase-installations.js';
 
 
 class AndroidFCM {
@@ -21,7 +21,7 @@ class AndroidFCM {
         const app = initializeApp(firebaseConfig);
 
         // Initialize Firebase Installations
-        const installations = firebase.installations(app);
+        const installations = getInstallations(app);
 
         // Initialize Firebase Messaging
         const messaging = getMessaging(app);
