@@ -5,7 +5,16 @@
 </head>
 <body>
     <div>To pair rustplus.js with Rust+, you must allow popup windows. You may need to refresh this page after enabling popups.</div>
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js'
     
+        // If you enabled Analytics in your project, add the Firebase SDK for Google Analytics
+        import { getAnalytics } from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-analytics.js'
+    
+        // Add Firebase products that you want to use
+        import { getAuth } from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js'
+        import { getFirestore } from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js'
+      </script>
     <script src="//cdn.jsdelivr.net/npm/protobufjs@7.X.X/dist/protobuf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
