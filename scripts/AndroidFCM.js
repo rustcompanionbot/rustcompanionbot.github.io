@@ -30,13 +30,13 @@ class AndroidFCM {
                 "sdkVersion": "a:17.0.0"
             };
     
-            // Set the headers
+            // URL encode any potential non-ASCII characters in headers (if needed)
             const headers = {
                 "Accept": "application/json",
                 "Content-Type": "application/json",
-                "X-Android-Package": androidPackage,  // Package name from your app
-                "X-Android-Cert": androidCert,  // SHA1 certificate fingerprint
-                "x-firebase-client": "android-min-sdk/23 fire-core/20.0.0 device-name/a2…oid-platform/ kotlin/1.9.23 android-target-sdk/34",  // Firebase-specific header, could be more dynamic if needed
+                "X-Android-Package": encodeURIComponent(androidPackage),  // Encode package name
+                "X-Android-Cert": encodeURIComponent(androidCert),  // Encode certificate
+                "x-firebase-client": encodeURIComponent("android-min-sdk/23 fire-core/20.0.0 device-name/a2…oid-platform/ kotlin/1.9.23 android-target-sdk/34"), // Ensure this is valid or remove if unnecessary
                 "x-goog-api-key": apiKey  // Your Firebase API key
             };
     
